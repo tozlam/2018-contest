@@ -156,7 +156,7 @@ function havespace(border) {
 }
 
 function havemove(border) {
-    if (canMoveLeft()) {
+    if (canMoveLeft()||canMoveRight()||canMoveUp()) {
         return true;
     }
     return false;
@@ -264,7 +264,80 @@ function moveRight() {
     setTimeout("updateBoardView()", 100);
     return true;
 }
+function moveUp() {
+    if (!canMoveUp(border)) {
+        return false;
+    }
+    resetAdd();
+    for (let j = 0; j < 4; j++) {
+        for (let i = 1; i < 4; i++) {
+            if (border[i][j] != 0) {
+                for (let x = 0; x < i; x++) {
 
+                    if (border[x][j] == 0 && noBlockVertical(j, x, i, border)) {//到达的位置为空且中间没有障碍
+                        border[x][j] = border[i][j];
+                        border[i][j] = 0;
+                        continue;
+                    } else if (border[x][j] == border[i][j] && noBlockVertical(j, x, i, border)) {
+                        if (add[x][i] != 0) {
+                            border[x+1][j] = border[i][j];
+                            border[i][j] = 0;
+                        }
+                        else {
+                            border[x][j] += border[i][j];
+                            border[i][j] = 0;
+                            add[x][j] = 1;
+                            score += border[x][j];
+
+                        }
+                        continue;
+                    }
+
+                }
+            }
+
+        }
+    }
+    setTimeout("updateBoardView()", 100);
+    return true;
+}
+function moveDown() {
+    if (!canMoveDown(border)) {
+        return false;
+    }
+    resetAdd();
+    for (let j = 0; j < 4; j++) {
+        for (let i = 2; i >=0; i--) {
+            if (border[i][j] != 0) {
+                for (let x = 3; x >i; x--) {
+
+                    if (border[x][j] == 0 && noBlockVertical(j, x, i, border)) {//到达的位置为空且中间没有障碍
+                        border[x][j] = border[i][j];
+                        border[i][j] = 0;
+                        continue;
+                    } else if (border[x][j] == border[i][j] && noBlockVertical(j, x, i, border)) {
+                        if (add[x][i] != 0) {
+                            border[x-1][j] = border[i][j];
+                            border[i][j] = 0;
+                        }
+                        else {
+                            border[x][j] += border[i][j];
+                            border[i][j] = 0;
+                            add[x][j] = 1;
+                            score += border[x][j];
+
+                        }
+                        continue;
+                    }
+
+                }
+            }
+
+        }
+    }
+    setTimeout("updateBoardView()", 100);
+    return true;
+}
 function canMoveLeft() {
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
@@ -290,7 +363,30 @@ function canMoveRight() {
     }
     return false;
 }
+function canMoveUp() {
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (border[i][j] != 0 && i != 0) {
+                if (border[i-1][j] == 0 || border[i-1][j] == border[i][j])
+                    return true;
+            }
 
+        }
+    }
+    return false;
+}
+function canMoveDown() {
+    for (let i = 0; i < 4; i++) {
+        for (let j = 0; j < 4; j++) {
+            if (border[i][j] != 0 && i != 3) {
+                if (border[i+1][j ] == 0 || border[i+1][j] == border[i][j])
+                    return true;
+            }
+
+        }
+    }
+    return false;
+}
 function isOver() {
     if (!havespace(border) && !havemove(border)) {
         gameover();

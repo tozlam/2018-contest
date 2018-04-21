@@ -19,6 +19,13 @@ $(document).keydown(function (event) {
                 setTimeout("isOver()", 400);
             }
             break;
+        case 38://Up
+            if (moveUp()) {
+                setScore();
+                giveNumberCell()//每次新增一个数字就可能出现游戏结束
+                setTimeout("isOver()", 400);
+            }
+            break;
         case 39://right
             if (moveRight()) {
                 setScore();
@@ -26,6 +33,15 @@ $(document).keydown(function (event) {
                 setTimeout("isOver()", 400);
             }
             break;
+        case 40://down
+            if (moveDown()) {
+                setScore();
+                giveNumberCell()//每次新增一个数字就可能出现游戏结束
+                setTimeout("isOver()", 400);
+            }
+            break;
     }
+
+
 });
 
