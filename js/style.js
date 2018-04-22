@@ -1,12 +1,15 @@
 var score = 0;
 var border = [];
 var add = [];
-
+var screenWidth = window.screen.availWidth;
+var  heightestScore=0;
 
 function init() {
     score = 0;
     document.getElementById("header_score").innerHTML = score;
+    getCookie();
     $("#gameover").addClass("gameover");
+    $("aside-right").css("right",(screenWidth-500)/50);
     for (let i = 0; i < 4; i++) {          //初始化4x4格子
         for (let j = 0; j < 4; j++) {
             var gridCell = $("#grid-cell-" + i + "-" + j);
@@ -46,7 +49,6 @@ function updateBoardView() {//更新数组的前端样式
         for (var j = 0; j < 4; j++) {
             $("#grid-container").append('<div class="number-cell" id="number-cell-' + i + '-' + j + '"></div>');
             var theNumberCell = $('#number-cell-' + i + '-' + j);
-            console.log(border);
             if (border[i][j] == 0) {
                 theNumberCell.css("width", "0px");
                 theNumberCell.css("height", "0px");
@@ -139,7 +141,7 @@ function giveNumberCell() {
     }
     var randNumber = Math.random() < 0.5 ? 2 : 4;
     border[randx][randy] = randNumber;
-    updateBoardView();
+    showNumberWithAnimation(randx,randy,randNumber);
     return true;
 }
 
@@ -200,10 +202,12 @@ function moveLeft() {
                 for (let x = 0; x < j; x++) {
 
                     if (border[i][x] == 0 && noBlockHorizontal(i, x, j, border)) {//到达的位置为空且中间没有障碍
+                        showMoveAnimation(i, j,i,x);
                         border[i][x] = border[i][j];
                         border[i][j] = 0;
                         continue;
                     } else if (border[i][x] == border[i][j] && noBlockHorizontal(i, x, j, border)) {
+                        showMoveAnimation(i, j,i,x);
                         if (add[i][x] != 0) {
                             border[i][x + 1] = border[i][j];
                             border[i][j] = 0;
@@ -213,7 +217,7 @@ function moveLeft() {
                             border[i][j] = 0;
                             add[i][x] = 1;
                             score += border[i][x];
-                            console.log(score);
+
                         }
                         continue;
                     }
@@ -238,10 +242,12 @@ function moveRight() {
                 for (let x = 3; x > j; x--) {
 
                     if (border[i][x] == 0 && noBlockHorizontal(i, x, j, border)) {//到达的位置为空且中间没有障碍
+                        showMoveAnimation(i, j,i,x);
                         border[i][x] = border[i][j];
                         border[i][j] = 0;
                         continue;
                     } else if (border[i][x] == border[i][j] && noBlockHorizontal(i, x, j, border)) {
+                        showMoveAnimation(i, j,i,x);
                         if (add[i][x] != 0) {
                             border[i][x - 1] = border[i][j];
                             border[i][j] = 0;
@@ -275,10 +281,12 @@ function moveUp() {
                 for (let x = 0; x < i; x++) {
 
                     if (border[x][j] == 0 && noBlockVertical(j, x, i, border)) {//到达的位置为空且中间没有障碍
+                        showMoveAnimation(i, j,x,j);
                         border[x][j] = border[i][j];
                         border[i][j] = 0;
                         continue;
                     } else if (border[x][j] == border[i][j] && noBlockVertical(j, x, i, border)) {
+                        showMoveAnimation(i, j,x,j);
                         if (add[x][i] != 0) {
                             border[x+1][j] = border[i][j];
                             border[i][j] = 0;
@@ -312,10 +320,12 @@ function moveDown() {
                 for (let x = 3; x >i; x--) {
 
                     if (border[x][j] == 0 && noBlockVertical(j, x, i, border)) {//到达的位置为空且中间没有障碍
+                        showMoveAnimation(i, j,x,j);
                         border[x][j] = border[i][j];
                         border[i][j] = 0;
                         continue;
                     } else if (border[x][j] == border[i][j] && noBlockVertical(j, x, i, border)) {
+                        showMoveAnimation(i, j,x,j);
                         if (add[x][i] != 0) {
                             border[x-1][j] = border[i][j];
                             border[i][j] = 0;
@@ -390,10 +400,39 @@ function canMoveDown() {
 function isOver() {
     if (!havespace(border) && !havemove(border)) {
         gameover();
+        setCookie(score);
     }
 }
 
 function gameover() {
     $("#gameover").addClass("gameover_display");
 
+}
+
+function setCookie(score) {
+    var date = new Date();
+    date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000); //设置date为当前时间加一年
+    document.cookie="score="+score+";expires=" + date.toGMTString();
+    if(heightestScore==0||score>heightestScore){
+        document.getElementById("gameover_show").innerHTML="New Best!";
+    }
+    document.getElementById("gameover_scoreaway").innerHTML=(heightestScore-score);
+}
+
+function getCookie() {
+    if(document.cookie.length>0){
+        var hs_start=document.cookie.indexOf("score=");
+        if(hs_start==-1){
+            return;
+        }
+        var hs_end=document.cookie.indexOf(";",hs_start);
+        if(hs_end!=-1){
+            heightestScore=document.cookie.substring(hs_start+6,hs_end);
+        }
+        else{
+            heightestScore=document.cookie.substring(hs_start+6);
+        }
+
+        document.getElementById("header_best").innerHTML=heightestScore;
+    }
 }

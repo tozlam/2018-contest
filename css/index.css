@@ -7,6 +7,7 @@
 
 body {
     position: relative;
+    background: url("../img/background.png");
 }
 
 header {
@@ -19,13 +20,22 @@ header {
     align-items: center;
 }
 
-#header_gamename{
-    font-weight: bold;
-}
-#header_newgame {
+/*#header_gamename{*/
+    /*font-weight: bold;*/
+/*}*/
+#header_newgame ,#gameover_newgame{
     width: 100px;
-    background: #515151;
+    background: rgb(119,110,102);
     color: white;
+}
+#header_scorespan,#header_bestspan{
+    text-align: left;
+    width: 120px;
+    font-weight: bold;
+    color: rgb(143,122,102);
+}
+#header_bestspan{
+    text-align: right;
 }
 
 #grid-container {
@@ -62,22 +72,70 @@ header {
 }
 
 .gameover_display {
-    background-color: #515151;
-    color: white;
-    font-size: 60px;
+    background-color: rgba(238, 228, 218, 0.5);
+    color: rgb(143,122,102);
     position: absolute;
     left: 50%;
-    margin-left: -125px;
+    margin-left: -250px;
     top: 50%;
-    transform: translateY(-50%);
-    width: 250px;
+    margin-top: -215px;
+    border-radius: 10px;
+    width: 500px;
+    height: 500px;
     text-align: center;
     display: block;
     z-index: 100;
+}
+#gameover_text{
+
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 12%;
+}
+.gameover_display p{
+    font-size: 60px;
+}
+#gameover_newgame{
+    position: absolute;
+    top: 65%;
+    left: 40%;
+    background:rgb(143,122,102) ;
 }
 
 .number-cell {
     width: 100px;
     height: 100px;
     z-index: 10;
+}
+aside-left{
+    width: 200px;
+    position: absolute;
+    left: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgb(143,122,102);
+}
+aside-left h1{
+    font-weight: bold;
+    font-size: 50px;
+}
+aside-right{
+    width: 200px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    color: rgb(143,122,102);
+}
+aside-right h1{
+    font-size: 40px;
+}
+@media only screen and (max-device-width: 720px){
+    aside-left{
+        display: none;
+    }
+    aside-right{
+        display: none;
+    }
+
 }
