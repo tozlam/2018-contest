@@ -3,13 +3,14 @@ $(document).ready(function (e) {
 });
 
 function newgame() {
-    init();
+    init();//初始化
+    //随机两个个格子
     giveNumberCell();
     giveNumberCell();
 
 }
 
-//事件响应循环
+//pc端事件响应循环
 $(document).keydown(function (event) {
     switch (event.keyCode) {
         case 37://left
@@ -44,18 +45,18 @@ $(document).keydown(function (event) {
 
 
 });
-
-document.addEventListener('touchstart', function(event){
+//移动端事件监听
+document.addEventListener('touchstart', function (event) {
 
     startx = event.touches[0].pageX;
     starty = event.touches[0].pageY;
 }, {passive: false});
 
-document.addEventListener('touchmove', function(event){
-    event.preventDefault();
+document.addEventListener('touchmove', function (event) {
+    event.preventDefault();//取消默认事件
 }, {passive: false});
 
-document.addEventListener('touchend', function(event){
+document.addEventListener('touchend', function (event) {
     endx = event.changedTouches[0].pageX;
     endy = event.changedTouches[0].pageY;
 
@@ -66,39 +67,43 @@ document.addEventListener('touchend', function(event){
         return;
 
     //x
-    if (Math.abs(deltax) >= Math.abs(deltay)) {
+    if (Math.abs(deltax) >= Math.abs(deltay)) {//水平滑动
         if (deltax > 0) {
             //move right
-            if(moveRight()){
+            if (moveRight()) {
                 setScore();
-                setTimeout("giveNumberCell()",210);
-                setTimeout("isOver()",300);
-            };
+                setTimeout("giveNumberCell()", 210);
+                setTimeout("isOver()", 300);
+            }
+            ;
         } else {
             //move left
-            if(moveLeft()){
+            if (moveLeft()) {
                 setScore();
-                setTimeout("giveNumberCell()",210);
-                setTimeout("isOver()",300);
-            };
+                setTimeout("giveNumberCell()", 210);
+                setTimeout("isOver()", 300);
+            }
+            ;
         }
     }
     //y
-    else {
+    else {//竖直滑动
         if (deltay > 0) {
             //move down
-            if(moveDown()){
+            if (moveDown()) {
                 setScore();
-                setTimeout("giveNumberCell()",210);
-                setTimeout("isOver()",300);
-            };
+                setTimeout("giveNumberCell()", 210);
+                setTimeout("isOver()", 300);
+            }
+            ;
         } else {
             //move up
-            if(moveUp()){
+            if (moveUp()) {
                 setScore();
-                setTimeout("giveNumberCell()",210);
-                setTimeout("isOver()",300);
-            };
+                setTimeout("giveNumberCell()", 210);
+                setTimeout("isOver()", 300);
+            }
+            ;
         }
     }
 

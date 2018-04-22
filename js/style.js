@@ -2,22 +2,29 @@ var score = 0;
 var border = [];
 var add = [];
 var screenWidth = window.screen.availWidth;
-var  heightestScore=0;
+var heightestScore = 0;
 
-function init() {
+function init() {                               //初始化
     score = 0;
-    document.getElementById("header_score").innerHTML = score;
-    getCookie();
-    $("#gameover").addClass("gameover");
-    $("aside-right").css("right",(screenWidth-500)/50);
-    for (let i = 0; i < 4; i++) {          //初始化4x4格子
+    document.getElementById("header_score").innerHTML = score;//分数归零
+    getCookie();                                                //获取历史最高分
+    $("#gameover").addClass("gameover");                      //隐藏gameover元素
+    var gridwidth = document.getElementById("grid-container").clientWidth;
+
+    if (screenWidth > 1024) {                                       //大屏幕尺寸条件下设置两边元素位置
+        $("#aside-right").css("right", (screenWidth - 500) / 50);
+        $("#aside-left").css("left", ((screenWidth - 500) / 4) - 100);
+    }
+
+
+    for (let i = 0; i < 4; i++) {          //初始化4x4矩阵
         for (let j = 0; j < 4; j++) {
             var gridCell = $("#grid-cell-" + i + "-" + j);
             gridCell.css("top", setTop(i, j));
             gridCell.css("left", setLeft(i, j));
         }
     }
-    for (let i = 0; i < 4; i++) {       //初始化格子数组
+    for (let i = 0; i < 4; i++) {       //初始化格子矩阵
 
         border[i] = [];
         for (let j = 0; j < 4; j++) {
@@ -25,7 +32,7 @@ function init() {
         }
     }
 
-    for (let i = 0; i < 4; i++) {  //初始化合并数组
+    for (let i = 0; i < 4; i++) {  //初始化合并矩阵
         add[i] = [];
         for (let j = 0; j < 4; j++) {
             add[i][j] = 0;
@@ -35,11 +42,11 @@ function init() {
 
 }
 
-function setTop(i, j) {
+function setTop(i, j) {         //设置格子y
     return 20 + i * 120;
 }
 
-function setLeft(i, j) {
+function setLeft(i, j) {        //设置格子x
     return 20 + j * 120;
 }
 
@@ -61,7 +68,7 @@ function updateBoardView() {//更新数组的前端样式
                 //NumberCell覆盖
                 theNumberCell.css("background-color", setNumberBackgroundColor(border[i][j]));//返回背景色
                 theNumberCell.css("color", setNumberColor(border[i][j]));//返回前景色
-                if (border[i][j] == 2048)
+                if (border[i][j] == 2048)                       //2048分值加入光芒
                     theNumberCell.css("box-shadow", "0 0 50px 10px yellow");
                 theNumberCell.text(border[i][j]);
             }
@@ -69,7 +76,7 @@ function updateBoardView() {//更新数组的前端样式
     }
 }
 
-function setNumberBackgroundColor(number) {
+function setNumberBackgroundColor(number) { //设置各个分值对应的颜色
     switch (number) {
         case 2:
             return "#eee4da";
@@ -114,24 +121,24 @@ function setNumberBackgroundColor(number) {
     return "black";
 }
 
-function setNumberColor(number) {
+function setNumberColor(number) {   //设置数字颜色
     if (number <= 4) {
         return "#776e65";
     }
     return "white";
 }
 
-function setScore() {
+function setScore() {           //更新分数
     document.getElementById("header_score").innerHTML = score;
 }
 
-function giveNumberCell() {
+function giveNumberCell() {     //随机一个格子
 
-    if (!havespace(border)) {
+    if (!havespace(border)) {   //判断是否还有位置
         return false;
     }
     while (true) {
-
+        //随机一个矩阵的x和y
         var randx = parseInt(Math.floor((Math.random() * 4)));
         var randy = parseInt(Math.floor((Math.random() * 4)));
         if (border[randx][randy] == 0) {
@@ -141,11 +148,11 @@ function giveNumberCell() {
     }
     var randNumber = Math.random() < 0.5 ? 2 : 4;
     border[randx][randy] = randNumber;
-    showNumberWithAnimation(randx,randy,randNumber);
+    showNumberWithAnimation(randx, randy, randNumber);//实现随机数字的样式变动
     return true;
 }
 
-function havespace(border) {
+function havespace(border) {        //判断是否还有位置
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (border[i][j] == 0) {
@@ -157,14 +164,14 @@ function havespace(border) {
     return false;
 }
 
-function havemove(border) {
-    if (canMoveLeft()||canMoveRight()||canMoveUp()) {
+function havemove(border) {         //判断是否还可以移动
+    if (canMoveLeft() || canMoveRight() || canMoveUp() || canMoveDown()) {
         return true;
     }
     return false;
 }
 
-function resetAdd() {
+function resetAdd() {           //重置add矩阵
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             add[i][j] = 0;
@@ -172,7 +179,7 @@ function resetAdd() {
     }
 }
 
-function noBlockHorizontal(row, col1, col2, border) {
+function noBlockHorizontal(row, col1, col2, border) { //判断水平方向是否有障碍物
     for (let i = col1 + 1; i < col2; i++) {
         if (border[row][i] != 0) {
             return false;
@@ -181,7 +188,7 @@ function noBlockHorizontal(row, col1, col2, border) {
     return true;
 }
 
-function noBlockVertical(col, row1, row2, border) {
+function noBlockVertical(col, row1, row2, border) {//判断竖直方向是否有障碍物
     for (let i = row1 + 1; i < row2; i++) {
         if (border[i][col] != 0) {
             return false;
@@ -190,25 +197,26 @@ function noBlockVertical(col, row1, row2, border) {
     return true;
 }
 
-
+//左移实现
 function moveLeft() {
-    if (!canMoveLeft(border)) {
+    if (!canMoveLeft(border)) { //判断能否左移
         return false;
     }
     resetAdd();
     for (let i = 0; i < 4; i++) {
-        for (let j = 1; j < 4; j++) {
+        for (let j = 1; j < 4; j++) {//第一列的数字不可能向左移动
             if (border[i][j] != 0) {
+                //(i,j)的左侧
                 for (let x = 0; x < j; x++) {
 
                     if (border[i][x] == 0 && noBlockHorizontal(i, x, j, border)) {//到达的位置为空且中间没有障碍
-                        showMoveAnimation(i, j,i,x);
+                        showMoveAnimation(i, j, i, x);
                         border[i][x] = border[i][j];
                         border[i][j] = 0;
                         continue;
-                    } else if (border[i][x] == border[i][j] && noBlockHorizontal(i, x, j, border)) {
-                        showMoveAnimation(i, j,i,x);
-                        if (add[i][x] != 0) {
+                    } else if (border[i][x] == border[i][j] && noBlockHorizontal(i, x, j, border)) { //到达的位置的数字和本来的数字相等 && 中间没有障碍物
+                        showMoveAnimation(i, j, i, x);//实现移动格子的样式变动
+                        if (add[i][x] != 0) {//目标位置是否完成过合并
                             border[i][x + 1] = border[i][j];
                             border[i][j] = 0;
                         }
@@ -232,23 +240,24 @@ function moveLeft() {
 }
 
 function moveRight() {
-    if (!canMoveRight(border)) {
+    if (!canMoveRight(border)) {//判断能否右移
         return false;
     }
     resetAdd();
     for (let i = 0; i < 4; i++) {
-        for (let j = 2; j >= 0; j--) {
+        for (let j = 2; j >= 0; j--) {//最后一列的数字不可能向右移动
             if (border[i][j] != 0) {
+                //(i,j)的右侧
                 for (let x = 3; x > j; x--) {
 
                     if (border[i][x] == 0 && noBlockHorizontal(i, x, j, border)) {//到达的位置为空且中间没有障碍
-                        showMoveAnimation(i, j,i,x);
+                        showMoveAnimation(i, j, i, x);//实现移动格子的样式变动
                         border[i][x] = border[i][j];
                         border[i][j] = 0;
                         continue;
-                    } else if (border[i][x] == border[i][j] && noBlockHorizontal(i, x, j, border)) {
-                        showMoveAnimation(i, j,i,x);
-                        if (add[i][x] != 0) {
+                    } else if (border[i][x] == border[i][j] && noBlockHorizontal(i, x, j, border)) {//到达的位置的数字和本来的数字相等 && 中间没有障碍物
+                        showMoveAnimation(i, j, i, x);//实现移动格子的样式变动
+                        if (add[i][x] != 0) {//目标位置是否完成过合并
                             border[i][x - 1] = border[i][j];
                             border[i][j] = 0;
                         }
@@ -257,7 +266,7 @@ function moveRight() {
                             border[i][j] = 0;
                             add[i][x] = 1;
                             score += border[i][x];
-                            console.log(score);
+
                         }
                         continue;
                     }
@@ -270,25 +279,27 @@ function moveRight() {
     setTimeout("updateBoardView()", 100);
     return true;
 }
+
 function moveUp() {
-    if (!canMoveUp(border)) {
+    if (!canMoveUp(border)) {//判断能否上移
         return false;
     }
     resetAdd();
     for (let j = 0; j < 4; j++) {
-        for (let i = 1; i < 4; i++) {
+        for (let i = 1; i < 4; i++) {//第一行的数字不可能向上移动
             if (border[i][j] != 0) {
+                //(i,j)的上面
                 for (let x = 0; x < i; x++) {
 
                     if (border[x][j] == 0 && noBlockVertical(j, x, i, border)) {//到达的位置为空且中间没有障碍
-                        showMoveAnimation(i, j,x,j);
+                        showMoveAnimation(i, j, x, j);//实现移动格子的样式变动
                         border[x][j] = border[i][j];
                         border[i][j] = 0;
                         continue;
-                    } else if (border[x][j] == border[i][j] && noBlockVertical(j, x, i, border)) {
-                        showMoveAnimation(i, j,x,j);
-                        if (add[x][i] != 0) {
-                            border[x+1][j] = border[i][j];
+                    } else if (border[x][j] == border[i][j] && noBlockVertical(j, x, i, border)) {//到达的位置的数字和本来的数字相等 && 中间没有障碍物
+                        showMoveAnimation(i, j, x, j);//实现移动格子的样式变动
+                        if (add[x][i] != 0) {//目标位置是否完成过合并
+                            border[x + 1][j] = border[i][j];
                             border[i][j] = 0;
                         }
                         else {
@@ -309,25 +320,27 @@ function moveUp() {
     setTimeout("updateBoardView()", 100);
     return true;
 }
+
 function moveDown() {
-    if (!canMoveDown(border)) {
+    if (!canMoveDown(border)) {//判断能否下移
         return false;
     }
     resetAdd();
     for (let j = 0; j < 4; j++) {
-        for (let i = 2; i >=0; i--) {
+        for (let i = 2; i >= 0; i--) {//最后一行的数字不可能向下移动
             if (border[i][j] != 0) {
-                for (let x = 3; x >i; x--) {
+                //(i,j)的下面
+                for (let x = 3; x > i; x--) {
 
                     if (border[x][j] == 0 && noBlockVertical(j, x, i, border)) {//到达的位置为空且中间没有障碍
-                        showMoveAnimation(i, j,x,j);
+                        showMoveAnimation(i, j, x, j);//实现移动格子的样式变动
                         border[x][j] = border[i][j];
                         border[i][j] = 0;
                         continue;
-                    } else if (border[x][j] == border[i][j] && noBlockVertical(j, x, i, border)) {
-                        showMoveAnimation(i, j,x,j);
-                        if (add[x][i] != 0) {
-                            border[x-1][j] = border[i][j];
+                    } else if (border[x][j] == border[i][j] && noBlockVertical(j, x, i, border)) {//到达的位置的数字和本来的数字相等 && 中间没有障碍物
+                        showMoveAnimation(i, j, x, j);//实现移动格子的样式变动
+                        if (add[x][i] != 0) {//目标位置是否完成过合并
+                            border[x - 1][j] = border[i][j];
                             border[i][j] = 0;
                         }
                         else {
@@ -348,7 +361,9 @@ function moveDown() {
     setTimeout("updateBoardView()", 100);
     return true;
 }
-function canMoveLeft() {
+
+//判断能否移动
+function canMoveLeft() {//判断能否向左移动
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (border[i][j] != 0 && j != 0) {
@@ -361,7 +376,7 @@ function canMoveLeft() {
     return false;
 }
 
-function canMoveRight() {
+function canMoveRight() {//判断能否向右移动
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (border[i][j] != 0 && j != 3) {
@@ -373,11 +388,12 @@ function canMoveRight() {
     }
     return false;
 }
-function canMoveUp() {
+
+function canMoveUp() {//判断能否向上移动
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (border[i][j] != 0 && i != 0) {
-                if (border[i-1][j] == 0 || border[i-1][j] == border[i][j])
+                if (border[i - 1][j] == 0 || border[i - 1][j] == border[i][j])
                     return true;
             }
 
@@ -385,11 +401,12 @@ function canMoveUp() {
     }
     return false;
 }
-function canMoveDown() {
+
+function canMoveDown() {//判断能否向下移动
     for (let i = 0; i < 4; i++) {
         for (let j = 0; j < 4; j++) {
             if (border[i][j] != 0 && i != 3) {
-                if (border[i+1][j ] == 0 || border[i+1][j] == border[i][j])
+                if (border[i + 1][j] == 0 || border[i + 1][j] == border[i][j])
                     return true;
             }
 
@@ -397,42 +414,46 @@ function canMoveDown() {
     }
     return false;
 }
-function isOver() {
+
+function isOver() {     //判断游戏与否
     if (!havespace(border) && !havemove(border)) {
         gameover();
-        setCookie(score);
+        setGameover(score);   //设置游戏结束后的处理
     }
 }
 
-function gameover() {
+function gameover() {       //显示gameover元素
     $("#gameover").addClass("gameover_display");
 
 }
 
-function setCookie(score) {
+function setGameover(score) {       //设置游戏结束后的处理
     var date = new Date();
     date.setTime(date.getTime() + 365 * 24 * 60 * 60 * 1000); //设置date为当前时间加一年
-    document.cookie="score="+score+";expires=" + date.toGMTString();
-    if(heightestScore==0||score>heightestScore){
-        document.getElementById("gameover_show").innerHTML="New Best!";
+    document.cookie = "score=" + score + ";expires=" + date.toGMTString();    //设置分数cookie
+    if (heightestScore == 0 || score > heightestScore) {                    //第一次游戏和当局分数为最高分的情况
+        document.getElementById("gameover_show").innerHTML = "New Best!";
     }
-    document.getElementById("gameover_scoreaway").innerHTML=(heightestScore-score);
+    else {
+        document.getElementById("gameover_scoreaway").innerHTML = (heightestScore - score);
+    }
+
 }
 
-function getCookie() {
-    if(document.cookie.length>0){
-        var hs_start=document.cookie.indexOf("score=");
-        if(hs_start==-1){
+function getCookie() {      //获取历史最高分
+    if (document.cookie.length > 0) {
+        var hs_start = document.cookie.indexOf("score=");
+        if (hs_start == -1) {
             return;
         }
-        var hs_end=document.cookie.indexOf(";",hs_start);
-        if(hs_end!=-1){
-            heightestScore=document.cookie.substring(hs_start+6,hs_end);
+        var hs_end = document.cookie.indexOf(";", hs_start);
+        if (hs_end != -1) {
+            heightestScore = document.cookie.substring(hs_start + 6, hs_end);
         }
-        else{
-            heightestScore=document.cookie.substring(hs_start+6);
+        else {
+            heightestScore = document.cookie.substring(hs_start + 6);
         }
 
-        document.getElementById("header_best").innerHTML=heightestScore;
+        document.getElementById("header_best").innerHTML = heightestScore;
     }
 }
