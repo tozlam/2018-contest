@@ -1,6 +1,20 @@
-$(document).ready(function (e) {
+
+
+window.onload=function () {
+
+    gridwidth = document.getElementById("grid-container").clientWidth;
+    cellwidth=0.2*gridwidth;
     newgame();
-});
+};
+
+window.onresize = function(){  //浏览器大小改变重载样式
+    gridwidth = document.getElementById("grid-container").clientWidth;
+    cellwidth=0.2*gridwidth;
+    gridinit();
+    updateBoardView();
+}
+
+
 
 function newgame() {
     init();//初始化
@@ -63,7 +77,7 @@ document.addEventListener('touchend', function (event) {
     var deltax = endx - startx;
     var deltay = endy - starty;
 
-    if (Math.abs(deltax) < 0.2 * screenWidth && Math.abs(deltay) < 0.2 * screenWidth)
+    if (Math.abs(deltax) < 0.2 *document.body.clientWidth && Math.abs(deltay) < 0.2 * document.body.clientWidth)
         return;
 
     //x

@@ -1,29 +1,20 @@
 var score = 0;
 var border = [];
 var add = [];
-var screenWidth = window.screen.availWidth;
 var heightestScore = 0;
+var screenwidth;
+var gridwidth;
+var cellwidth;
 
 function init() {                               //初始化
     score = 0;
     document.getElementById("header_score").innerHTML = score;//分数归零
     getCookie();                                                //获取历史最高分
     $("#gameover").addClass("gameover");                      //隐藏gameover元素
-    var gridwidth = document.getElementById("grid-container").clientWidth;
-
-    if (screenWidth > 1024) {                                       //大屏幕尺寸条件下设置两边元素位置
-        $("#aside-right").css("right", (screenWidth - 500) / 50);
-        $("#aside-left").css("left", ((screenWidth - 500) / 4) - 100);
-    }
 
 
-    for (let i = 0; i < 4; i++) {          //初始化4x4矩阵
-        for (let j = 0; j < 4; j++) {
-            var gridCell = $("#grid-cell-" + i + "-" + j);
-            gridCell.css("top", setTop(i, j));
-            gridCell.css("left", setLeft(i, j));
-        }
-    }
+    gridinit();
+
     for (let i = 0; i < 4; i++) {       //初始化格子矩阵
 
         border[i] = [];
@@ -42,16 +33,31 @@ function init() {                               //初始化
 
 }
 
+function gridinit() {
+    for (let i = 0; i < 4; i++) {          //初始化4x4矩阵
+        for (let j = 0; j < 4; j++) {
+            var gridCell = $("#grid-cell-" + i + "-" + j);
+            gridCell.css("top", setTop(i, j));
+            gridCell.css("left", setLeft(i, j));
+        }
+    }
+}
+
 function setTop(i, j) {         //设置格子y
-    return 20 + i * 120;
+
+    return 0.2*cellwidth + i * (cellwidth+0.2*cellwidth);
 }
 
 function setLeft(i, j) {        //设置格子x
-    return 20 + j * 120;
+    return  0.2*cellwidth + j * (cellwidth+0.2*cellwidth);
 }
 
 function updateBoardView() {//更新数组的前端样式
+    $(".grid-cell").css("width",cellwidth);
+    $(".grid-cell").css("height",cellwidth);
+
     $(".number-cell").remove();
+
     for (var i = 0; i < 4; i++) {
         for (var j = 0; j < 4; j++) {
             $("#grid-container").append('<div class="number-cell" id="number-cell-' + i + '-' + j + '"></div>');
@@ -62,7 +68,9 @@ function updateBoardView() {//更新数组的前端样式
                 theNumberCell.css("top", setTop(i, j));
                 theNumberCell.css("left", setLeft(i, j));
             } else {
-                theNumberCell.addClass("number-cell");
+                theNumberCell.css("width",cellwidth);
+                theNumberCell.css("height",cellwidth);
+                theNumberCell.css("z-index",10);
                 theNumberCell.css("top", setTop(i, j));
                 theNumberCell.css("left", setLeft(i, j));
                 //NumberCell覆盖
@@ -74,6 +82,7 @@ function updateBoardView() {//更新数组的前端样式
             }
         }
     }
+    $(".number-cell").css("line-height",cellwidth*0.02);
 }
 
 function setNumberBackgroundColor(number) { //设置各个分值对应的颜色

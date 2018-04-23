@@ -6,11 +6,11 @@ function showNumberWithAnimation(i, j, randNumber) {//实现随机数字的样�
     numberCell.text(randNumber);
 
     numberCell.animate({
-        width: "100px",
-        height: "100px",
+        width: cellwidth,
+        height: cellwidth,
         top: setTop(i, j),
         left: setLeft(i, j)
-    }, 50);
+    }, 100);
 }
 
 function showMoveAnimation(fromx, fromy, tox, toy) {//实现移动格子的样式变动

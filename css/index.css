@@ -48,18 +48,16 @@ header {
 }
 
 .grid-cell {
-    width: 100px;
-    height: 100px;
+    /*width: 100px;*/
+    /*height: 100px;*/
     border-radius: 6px;
     background: #ccc0b3;
     position: absolute;
 }
 
 .number-cell {
-    width: 100px;
-    height: 100px;
     border-radius: 6px;
-    line-height: 100px;
+    /*line-height: 100px;*/
     font-size: 50px;
     font-weight: bold;
     text-align: center;
@@ -105,46 +103,12 @@ header {
     background: rgb(143, 122, 102);
 }
 
-.number-cell {
-    width: 100px;
-    height: 100px;
-    z-index: 10;
-}
 
-#aside-left {
-    width: 200px;
-    position: absolute;
-    left: 5%;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgb(143, 122, 102);
-}
 
-#aside-left h1 {
-    font-weight: bold;
-    font-size: 50px;
-}
-
-#aside-right {
-    width: 200px;
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    color: rgb(143, 122, 102);
-}
-
-#aside-right h1 {
-    font-size: 40px;
-}
-
-/*小尺寸设备取消两边元素显示*/
-@media only screen and (max-device-width:1024px) {
-    #aside-left {
-        display: none;
-    }
-
-    #aside-right {
-        display: none;
+@media screen and (max-width:520px ){
+    #grid-container{
+        width:280px;
+        height:280px;
     }
 
 }
